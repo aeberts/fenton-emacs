@@ -1,3 +1,6 @@
+;; instructions https://github.com/ftravers/emacs-ground-up
+;;
+;;; Code:
 (set-face-attribute 'default nil :height 140 :family "Menlo")
 
 ;; interesting page:
@@ -18,6 +21,7 @@
 (setq use-package-always-ensure t)    ;; download packages if not already downloaded
 (setq evil-want-keybinding nil)
 (add-to-list 'exec-path "/usr/local/bin")
+
 ;; ============== favorite packages ==================
 (use-package flycheck-clj-kondo)
 (use-package clojure-mode
@@ -25,6 +29,7 @@
   :mode ("\\.clj\\'")
   :config
   (require 'flycheck-clj-kondo))
+(use-package clj-refactor)
 (use-package evil)                      ; vi like key bindings
 (use-package projectile)                ; navigate git projects
 (use-package diminish)                  ; reduce mode-line clutter
@@ -37,7 +42,7 @@
   :diminish helm-mode)
 (use-package helm-ag)
 (use-package winum)                     ; switch between buffers using numbers
-(use-package magit) 			; git integration
+(use-package magit)                     ; git integration
 (use-package evil-magit)                ; vi bindings for magit
 (use-package highlight-parentheses)     ; rainbow parens
 (use-package company)                   ; completion
@@ -55,12 +60,9 @@
 (require 'thingatpt)
 (use-package auto-complete)
 (use-package evil-surround :ensure t :config (global-evil-surround-mode 1))
-;; (use-package cl)
-(use-package clj-refactor)
 (use-package command-log-mode)
 (use-package htmlize)
 (use-package markdown-mode)
-;; (use-package evil-collection) ; kills my ']' key!!!
 (use-package elisp-refs)
 (use-package org-preview-html)
 (use-package flymd)                     ; live preview org-mode -> markdown
@@ -74,25 +76,23 @@
 (use-package flycheck-joker)
 (use-package edit-indirect)
 (use-package dash)
-
 (use-package eval-sexp-fu)
 (use-package evil-escape)
 
 ;; ========== function defs ==========
 (add-to-list 'load-path "~/.fenton-emacs.d/lisp/")
 (add-to-list 'load-path "~/.fenton-emacs.d/src/")
-;;(add-to-list 'load-path "~/.fenton-emacs.d/test/")
-;; (load "jump_unit.el")
 (load "my-functions.el")
 (load "key-defs-hydras.el")
-(load "sunrise-commander.el")
 (load "utilities.el")
+(load "sunrise-commander.el")
 ;;(load "ft_git.el")
+;; (load "jump_unit.el")
+;;(add-to-list 'load-path "~/.fenton-emacs.d/test/")
 
 ;; clj kondo
 (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc clj-kondo-edn))
   (setq flycheck-checkers (cons checker (delq checker flycheck-checkers))))
-
 (dolist (checkers '((clj-kondo-clj . clojure-joker)
                     (clj-kondo-cljs . clojurescript-joker)
                     (clj-kondo-cljc . clojure-joker)
@@ -102,6 +102,7 @@
 ;; use a bunch of minor modes
 ;; (elpy-enable)
 
+;; Python
 ;; Use IPython for REPL
 ;; (setq python-shell-interpreter "jupyter"
 ;;       python-shell-interpreter-args "console --simple-prompt"
@@ -117,6 +118,8 @@
 ;;(global-prettify-symbols-mode 1) ;; display “lambda” as “λ”
 
 ;; Evil mode settings
+
+;; Evil mode
 (evil-mode 1)
 (setq-default evil-normal-state-cursor 'box)
 (setq-default evil-insert-state-cursor 'bar)
@@ -148,16 +151,18 @@
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
 
-                                        ;(mapcar (lambda (fn) (fn 1)) '(desktop-save-mode show-paren-mode))
+;; Themes
+;; (load-theme 'wombat t)
+;; (load-theme 'spacegray t)
+;; (load-theme 'color-theme-sanityinc-tomorrow-day t)
+(load-theme 'leuven t)
 
-
-;; ============= Simple Config ====================
-(load-theme 'wombat t)                  ; color theme
 ;; (add-to-list 'helm-completing-read-handlers-alist '(dired . nil))
 (setq-default truncate-lines t          ; dont wrap long lines
               indent-tabs-mode nil)   ; always replace tabs with spaces
 
 (setq inhibit-startup-message t
+      blink-cursor-mode 0
       org-clock-persist 'history
       lispy-close-quotes-at-end-p t
       dired-dwim-target t
@@ -208,6 +213,7 @@
                     ;; helm-mode
                     auto-revert-mode projectile-mode))
 (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
+
 ;; ============= HOOKS ==============================
 (add-hook 'prog-mode-hook
           (lambda ()
@@ -242,22 +248,24 @@
           (lambda ()
             (eval-sexp-fu-flash-mode)))
 
-;; ========== key defs and hydras ==========
-;; (evil-collection-init '(magit help calc info
-;;                               ;; dired neotree
-;;                               ))
-;; dont do these: neotree
-;; (evil-collection-init '( dired))
-
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default bold shadow italic underline bold bold-italic bold])
+ '(ansi-color-names-vector
+   (vector "#ffffff" "#bf616a" "#B4EB89" "#ebcb8b" "#89AAEB" "#C189EB" "#89EBCA" "#232830"))
+ '(custom-enabled-themes (quote (sanityinc-tomorrow-day)))
+ '(custom-safe-themes
+   (quote
+    ("bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" default)))
+ '(fci-rule-color "#343d46")
  '(package-selected-packages
    (quote
-    (evil-escape ob-clojure eval-sexp-fu elpy js2-mode ein edit-indirect flycheck-clj-kondo counsel-projectile elisp-refs neotree neo-tree org-preview-html evil-collection flymd markdown-mode magit-gh-pulls treemacs-projectile treemacs-evil htmlize command-log-mode clj-refactor evil-surround auto-complete cider-eldoc sr-speedbar cider winum wk use-package magit lispy highlight-parentheses helm-projectile helm-ag evil el-get diminish delight company clojure-mode buffer-move)))
+    (color-theme-sanityinc-tomorrow spacegray-theme evil-escape ob-clojure eval-sexp-fu elpy js2-mode ein edit-indirect flycheck-clj-kondo counsel-projectile elisp-refs neotree neo-tree org-preview-html evil-collection flymd markdown-mode magit-gh-pulls treemacs-projectile treemacs-evil htmlize command-log-mode clj-refactor evil-surround auto-complete cider-eldoc sr-speedbar cider winum wk use-package magit lispy highlight-parentheses helm-projectile helm-ag evil el-get diminish delight company clojure-mode buffer-move)))
  '(safe-local-variable-values
    (quote
     ((elisp-lint-indent-specs
@@ -280,7 +288,29 @@
      (checkdoc-package-keywords-flag)
      (source-dir . "aoc2018_14")
      (source-dir . "aoc2018_13")
-     (source-dir . aoc2018_13)))))
+     (source-dir . aoc2018_13))))
+ '(vc-annotate-background nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#bf616a")
+     (40 . "#DCA432")
+     (60 . "#ebcb8b")
+     (80 . "#B4EB89")
+     (100 . "#89EBCA")
+     (120 . "#89AAEB")
+     (140 . "#C189EB")
+     (160 . "#bf616a")
+     (180 . "#DCA432")
+     (200 . "#ebcb8b")
+     (220 . "#B4EB89")
+     (240 . "#89EBCA")
+     (260 . "#89AAEB")
+     (280 . "#C189EB")
+     (300 . "#bf616a")
+     (320 . "#DCA432")
+     (340 . "#ebcb8b")
+     (360 . "#B4EB89"))))
+ '(vc-annotate-very-old-color nil))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
